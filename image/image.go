@@ -18,15 +18,16 @@ type Image struct {
 }
 
 func (i CreateImageRequest) toImage(owner string) Image {
+	uuidToCreate := uuid.New()
 	return Image{
-		UUID:       uuid.New(),
+		UUID:       uuidToCreate,
 		Name:       i.Name,
 		Owner:      owner,
 		Extension:  i.Extension,
 		Height:     i.Height,
 		Length:     i.Length,
 		Bucket:     os.Getenv("BUCKET"),
-		BucketPath: i.Name + i.Extension,
+		BucketPath: uuidToCreate.String() + "." + i.Extension,
 		Status:     "CREATED",
 	}
 }
