@@ -9,6 +9,9 @@ This is a simple GO microservice that allows the upload and consumption of image
 For a detailed documentation on how to query the API, please visit the [SwaggerHup API Page](https://app.swaggerhub.com/apis-docs/wtrep/shopify-images-repo/1.0.0).
 
 ## Details about the microservice
+### File structure
+The main logic of the microservice can be found in the image package. The common package is shared between this microservice and the [auth microservice](https://github.com/wtrep/shopify-backend-challenge-auth).
+
 ### Authentification
 This microservice rely on the [Shopify Backend Challenge Image Microservice](https://github.com/wtrep/shopify-backend-challenge-auth) to authenticate users and to
 provide JWT to users. Since the signing key is shared as Kubernetes Secret between the two microservices, the Image Microservice can authenticate users without
