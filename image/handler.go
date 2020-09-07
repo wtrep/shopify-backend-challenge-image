@@ -3,6 +3,7 @@ package image
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/wtrep/shopify-backend-challenge-image/common"
@@ -20,17 +21,7 @@ type Handler struct {
 	db *sql.DB
 }
 
-func CheckEnvVariables() {
-	env := []string{"DB_IP", "DB_PASSWORD", "DB_USERNAME", "DB_NAME", "JWT_KEY", "BUCKET",
-		"GOOGLE_APPLICATION_CREDENTIALS"}
-	for _, e := range env {
-		_, ok := os.LookupEnv(e)
-		if !ok {
-			panic("fatal: environment variable " + e + " is not set")
-		}
-	}
-}
-
+// Setup the routes and handle them
 func SetupAndServeRoutes() {
 	CheckEnvVariables()
 
@@ -46,12 +37,32 @@ func SetupAndServeRoutes() {
 	r.HandleFunc("/image/{uuid}", handler.HandleDeleteImage).Methods("DELETE")
 	r.HandleFunc("/images", handler.HandleGetImages).Methods("GET")
 	r.HandleFunc("/upload/{uuid}", handler.HandlePostUpload).Methods("POST")
+	r.HandleFunc("/healthz", HandleHealthzProbe)
 	err = http.ListenAndServe(":8080", r)
 	if err != nil {
 		panic(err)
 	}
 }
 
+// Ensure that all required environment variables are set
+func CheckEnvVariables() {
+	env := []string{"DB_IP", "DB_PASSWORD", "DB_USERNAME", "DB_NAME", "JWT_KEY", "BUCKET",
+		"GOOGLE_APPLICATION_CREDENTIALS"}
+	for _, e := range env {
+		_, ok := os.LookupEnv(e)
+		if !ok {
+			panic("fatal: environment variable " + e + " is not set")
+		}
+	}
+}
+
+// Respond to the Kubernetes Readiness and Liveness probes
+func HandleHealthzProbe(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "OK")
+}
+
+// Handle the API request to create an image
 func (h *Handler) HandlePostImage(w http.ResponseWriter, r *http.Request) {
 	var request CreateImageRequest
 	w.Header().Set("Content-Type", "application/json")
@@ -80,6 +91,7 @@ func (h *Handler) HandlePostImage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Handle the API request to get an image
 func (h *Handler) HandleGetImage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json")
@@ -120,6 +132,7 @@ func (h *Handler) HandleGetImage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Handle the API request to upload an image
 func (h *Handler) HandlePostUpload(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json")
@@ -177,6 +190,7 @@ func (h *Handler) HandlePostUpload(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Handle the API request to delete an image
 func (h *Handler) HandleDeleteImage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json")
@@ -231,6 +245,7 @@ func (h *Handler) HandleDeleteImage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Handle the API request to get all images owned by the user initiating the request
 func (h *Handler) HandleGetImages(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -253,6 +268,7 @@ func (h *Handler) HandleGetImages(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Check the validity of the JWT and return the username related to the token
 func handleJWT(r *http.Request) (string, *common.ErrorResponseError) {
 	if r.Header["Key"] == nil {
 		return "", &common.MissingTokenError
@@ -265,6 +281,7 @@ func handleJWT(r *http.Request) (string, *common.ErrorResponseError) {
 	return username, nil
 }
 
+// Parse the multipart-form and return the file uploaded
 func getImageFromForm(w http.ResponseWriter, r *http.Request) (multipart.File, *common.ErrorResponseError) {
 	r.Body = http.MaxBytesReader(w, r.Body, 10<<20)
 	err := r.ParseMultipartForm(10 << 20)

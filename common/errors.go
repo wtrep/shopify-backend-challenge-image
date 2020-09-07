@@ -1,3 +1,7 @@
+/*
+  This file defines commonly used errors that are shared by the frontend and the backend
+ */
+
 package common
 
 import (

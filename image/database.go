@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// Return a connection Pool that can query the DB parameterized by environment variables
 func NewConnectionPool() (*sql.DB, error) {
 	dbIP := os.Getenv("DB_IP")
 	dbPassword := os.Getenv("DB_PASSWORD")
@@ -21,6 +22,7 @@ func NewConnectionPool() (*sql.DB, error) {
 	return db, nil
 }
 
+// Create a DB record for the specified image
 func CreateImage(db *sql.DB, image Image) error {
 	uuidToCreate, err := image.UUID.MarshalBinary()
 	if err != nil {
@@ -36,6 +38,7 @@ func CreateImage(db *sql.DB, image Image) error {
 	return nil
 }
 
+// Update the image record with the same uuid as the one that is passed as parameter
 func UpdateImage(db *sql.DB, image Image) error {
 	uuidToUpdate, err := image.UUID.MarshalBinary()
 	if err != nil {
@@ -52,6 +55,7 @@ func UpdateImage(db *sql.DB, image Image) error {
 	return nil
 }
 
+// Delete an image record with the provided uuid
 func DeleteImage(db *sql.DB, id uuid.UUID) (*sql.Tx, error) {
 	uuidToDelete, err := id.MarshalBinary()
 	if err != nil {
@@ -68,6 +72,7 @@ func DeleteImage(db *sql.DB, id uuid.UUID) (*sql.Tx, error) {
 	return tx, nil
 }
 
+// Return the record associated to the image uuid
 func GetImage(db *sql.DB, id uuid.UUID) (*Image, error) {
 	uuidToGet, err := id.MarshalBinary()
 	if err != nil {
@@ -91,6 +96,7 @@ func GetImage(db *sql.DB, id uuid.UUID) (*Image, error) {
 	return image, nil
 }
 
+// Return the record(s) of the image owned by the user passed as parameter
 func GetImages(db *sql.DB, username string) ([]Image, error) {
 	rows, err := db.Query("SELECT * FROM images WHERE owner = ? LIMIT 500", username)
 	images := make([]Image, 0)

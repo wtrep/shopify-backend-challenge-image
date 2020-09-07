@@ -16,6 +16,7 @@ var KeyFuncJWTError = errors.New("error with KeyFunc")
 var ParsingJWTError = errors.New("error with JWT parsing")
 var InvalidJWTTokenError = errors.New("error the token is invalid")
 
+// Generate a JWT for the provided username
 func GenerateJWT(username string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
@@ -33,6 +34,7 @@ func GenerateJWT(username string) (string, error) {
 	return signedToken, nil
 }
 
+// Parse the JWT and verify it's validity with the signing private key
 func VerifyJWT(token string) (string, error) {
 	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

@@ -15,6 +15,7 @@ const (
 	urlExpirationDelay = 15 * time.Minute
 )
 
+// Upload the file to the specified GCP bucket at the object path
 func uploadToBucket(data io.Reader, bucket, object string) error {
 	client, err := storage.NewClient(context.Background())
 	if err != nil {
@@ -35,6 +36,7 @@ func uploadToBucket(data io.Reader, bucket, object string) error {
 	return nil
 }
 
+// Generate a limited time download link for a specific object
 func generateSignedURL(bucket, object string) (string, error) {
 	serviceAccount := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
 	jsonKey, err := ioutil.ReadFile(serviceAccount)
@@ -61,6 +63,7 @@ func generateSignedURL(bucket, object string) (string, error) {
 	return u, nil
 }
 
+// Delete a specific file from a determined GCP bucket
 func deleteFile(bucket, object string) error {
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx)
