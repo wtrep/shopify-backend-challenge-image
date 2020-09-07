@@ -28,7 +28,7 @@ The images are hosted on a GCP Cloud Storage Bucket. The microservice needs to h
 The microservice is packaged into a Docker image to allow deployment into a Kubernetes Cluster. You can also download the built image directly from [Docker Hub](https://hub.docker.com/r/wtrep/shopify-backend-challenge-image)
 
 ## Environment variables
-The following environment variables need to be set for the microservice to work : \\
+The following environment variables need to be set for the microservice to work :
 | Environment variable           | Description                                                                                                                            |
 | -------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------:|
 | DB_USERNAME                    | Username to access the MySQL DB                                                                                                        |
