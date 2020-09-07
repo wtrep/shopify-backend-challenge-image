@@ -18,19 +18,19 @@ provide JWT to users. Since the signing key is shared as Kubernetes Secret betwe
 relying on an active sessions database.
 
 ### Database
-The microservice needs to have access to a MySQL database. You can find the Terraform code for a GCP Cloud SQL instance in the [main repository](https://github.com/wtrep/shopify-backend-challenge/tree/master/terraform/cloud_sql).
+The microservice needs to have access to a MySQL database located at `localhost:3306`. You can find the Terraform code for a GCP Cloud SQL instance in the [main repository](https://github.com/wtrep/shopify-backend-challenge/tree/master/terraform/cloud_sql). For local testing you can use the [mysql docker image](https://hub.docker.com/_/mysql). To allow the access to Cloud SQL on GKE, you need to use the Cloud SQL sidecar proxy as shown in the [main
+repository](https://github.com/wtrep/shopify-backend-challenge/blob/master/kubernetes/image-microservice-deployment.yml).
 
 ### Cloud Storage
 The images are hosted on a GCP Cloud Storage Bucket. The microservice needs to have access to a GCP service account that allows write access to the repository and the permission to generate temporary download links. An example can be found in the [main repository.](https://github.com/wtrep/shopify-backend-challenge/tree/master/terraform/bucket)
 
 ### Docker Image and Kubernetes
-The microservice is packaged into a Dockerimage to allow deployment into a Kubernetes Cluster. You can also download the built image directly from [Docker Hub](https://hub.docker.com/r/wtrep/shopify-backend-challenge-image)
+The microservice is packaged into a Docker image to allow deployment into a Kubernetes Cluster. You can also download the built image directly from [Docker Hub](https://hub.docker.com/r/wtrep/shopify-backend-challenge-image)
 
 ## Environment variables
 The following environment variables need to be set for the microservice to work : \\
 | Environment variable           | Description                                                                                                                            |
 | -------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------:|
-| DB_IP                          | IP Address of the database                                                                                                             |
 | DB_USERNAME                    | Username to access the MySQL DB                                                                                                        |
 | DB_PASSWORD                    | Password to access the MySQL DB                                                                                                        |
 | DB_NAME                        | Name of the MySQL database                                                                                                             |
@@ -57,7 +57,7 @@ docker build .
 
 ## List of possible improvements 
  * Automated tests
- * Use OAuth2 
+ * Use context to handle timeout on each SQL request
  * Granular permission and public image access
  * Ability to share images with other users
  * CICD Pipeline that builds and upload to Docker Hub a new Docker image at each merge to the master branch
