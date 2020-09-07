@@ -2,24 +2,45 @@ package image
 
 import (
 	"database/sql"
+	"fmt"
+	"os"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
-	"os"
 )
 
 // Return a connection Pool that can query the DB parameterized by environment variables
 func NewConnectionPool() (*sql.DB, error) {
-	dbIP := os.Getenv("DB_IP")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
-	dbUsername := os.Getenv("DB_USERNAME")
+	dbUser := os.Getenv("DB_USERNAME")
+	dbIP := "127.0.0.1"
 
-	db, err := sql.Open("mysql", dbUsername+":"+dbPassword+"@("+dbIP+")/"+dbName+
-		"?parseTime=true")
+	var dbURI string
+	dbURI = fmt.Sprintf("%s:%s@(%s)/%s?parseTime=true", dbUser, dbPassword, dbIP, dbName)
+
+	db, err := sql.Open("mysql", dbURI)
 	if err != nil {
 		return nil, err
 	}
+
+	err = createTableIfNotExist(db)
+	if err != nil {
+		return nil, err
+	}
+
 	return db, nil
+}
+
+// Create the images table if it doesn't exist
+func createTableIfNotExist(db *sql.DB) error {
+	_, err := db.Exec("CREATE TABLE IF NOT EXISTS images (UUID binary(16) not null primary key, " +
+		"name varchar(64) not null, owner varchar(32) not null, extension varchar(12) not null, height int null, " +
+		"length int null, bucket varchar(64) not null, bucketPath varchar(128) not null, status varchar(32) null)")
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // Create a DB record for the specified image

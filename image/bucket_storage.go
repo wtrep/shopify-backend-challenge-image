@@ -7,6 +7,7 @@ import (
 	"golang.org/x/oauth2/google"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"time"
 )
@@ -19,6 +20,7 @@ const (
 func uploadToBucket(data io.Reader, bucket, object string) error {
 	client, err := storage.NewClient(context.Background())
 	if err != nil {
+		log.Println(err.Error())
 		return err
 	}
 	defer client.Close()
@@ -28,9 +30,11 @@ func uploadToBucket(data io.Reader, bucket, object string) error {
 
 	wc := client.Bucket(bucket).Object(object).NewWriter(ctx)
 	if _, err = io.Copy(wc, data); err != nil {
+		log.Println(err.Error())
 		return err
 	}
 	if err := wc.Close(); err != nil {
+		log.Println(err.Error())
 		return err
 	}
 	return nil

@@ -4,13 +4,14 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/gorilla/mux"
-	"github.com/wtrep/shopify-backend-challenge-image/common"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/gorilla/mux"
+	"github.com/wtrep/shopify-backend-challenge-image/common"
 )
 
 const (
@@ -46,7 +47,7 @@ func SetupAndServeRoutes() {
 
 // Ensure that all required environment variables are set
 func CheckEnvVariables() {
-	env := []string{"DB_IP", "DB_PASSWORD", "DB_USERNAME", "DB_NAME", "JWT_KEY", "BUCKET",
+	env := []string{"DB_PASSWORD", "DB_USERNAME", "DB_NAME", "JWT_KEY", "BUCKET",
 		"GOOGLE_APPLICATION_CREDENTIALS"}
 	for _, e := range env {
 		_, ok := os.LookupEnv(e)
