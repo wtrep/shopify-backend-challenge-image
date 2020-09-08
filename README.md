@@ -33,6 +33,7 @@ The following environment variables need to be set for the microservice to work 
 | DB_USERNAME                    | Username to access the MySQL DB                                                                                                        |
 | DB_PASSWORD                    | Password to access the MySQL DB                                                                                                        |
 | DB_NAME                        | Name of the MySQL database                                                                                                             |
+| DB_IP (`127.0.0.1` if not set) | IP of the MySQL database (Only for local testing)                                                                                      |
 | JWT_KEY                        | Private key to verify JWT Tokens. Must be the same as the [auth microservice](https://github.com/wtrep/shopify-backend-challenge-auth) |
 | BUCKET                         | Name of the GCP Bucket where to upload the images                                                                                      |
 | GOOGLE_APPLICATION_CREDENTIALS | Path to the Service Account .json file to allow Bucket write access                                                                    |

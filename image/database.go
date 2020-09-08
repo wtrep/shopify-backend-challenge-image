@@ -14,7 +14,10 @@ func NewConnectionPool() (*sql.DB, error) {
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 	dbUser := os.Getenv("DB_USERNAME")
-	dbIP := "127.0.0.1"
+	dbIP, ok := os.LookupEnv("DB_IP")
+	if !ok {
+		dbIP = "127.0.0.1"
+	}
 
 	var dbURI string
 	dbURI = fmt.Sprintf("%s:%s@(%s)/%s?parseTime=true", dbUser, dbPassword, dbIP, dbName)
