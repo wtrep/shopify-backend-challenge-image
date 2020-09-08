@@ -18,8 +18,7 @@ provide JWT to users. Since the signing key is shared as Kubernetes Secret betwe
 relying on an active sessions database.
 
 ### Database
-The microservice needs to have access to a MySQL database located at `localhost:3306`. You can find the Terraform code for a GCP Cloud SQL instance in the [main repository](https://github.com/wtrep/shopify-backend-challenge/tree/master/terraform/cloud_sql). For local testing you can use the [mysql docker image](https://hub.docker.com/_/mysql). To allow the access to Cloud SQL on GKE, you need to use the Cloud SQL sidecar proxy as shown in the [main
-repository](https://github.com/wtrep/shopify-backend-challenge/blob/master/kubernetes/image-microservice-deployment.yml).
+The microservice needs to have access to a MySQL database located at `localhost:3306`. You can find the Terraform code for a GCP Cloud SQL instance in the [main repository](https://github.com/wtrep/shopify-backend-challenge/tree/master/terraform/cloud_sql). For local testing you can use the [mysql docker image](https://hub.docker.com/_/mysql). To allow access to Cloud SQL in GKE, you need to use the Cloud SQL sidecar proxy as shown in the [main repository](https://github.com/wtrep/shopify-backend-challenge/blob/master/kubernetes/image-microservice-deployment.yml).
 
 ### Cloud Storage
 The images are hosted on a GCP Cloud Storage Bucket. The microservice needs to have access to a GCP service account that allows write access to the repository and the permission to generate temporary download links. An example can be found in the [main repository.](https://github.com/wtrep/shopify-backend-challenge/tree/master/terraform/bucket)
@@ -60,4 +59,4 @@ docker build .
  * Use context to handle timeout on each SQL request
  * Granular permission and public image access
  * Ability to share images with other users
- * CICD Pipeline that builds and upload to Docker Hub a new Docker image at each merge to the master branch
+ * CICD Pipeline that builds and upload to Docker Hub a new Docker image at each merge to the master branch.
